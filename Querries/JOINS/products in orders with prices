@@ -1,0 +1,12 @@
+SELECT order_id,
+       sum(price) as order_price
+FROM   (SELECT order_id,
+               o.product_id,
+               price
+        FROM   products p
+            RIGHT JOIN (SELECT order_id,
+                               unnest(product_ids) as product_id
+                        FROM   orders) as o
+                ON p.product_id = o.product_id) t
+GROUP BY order_id
+ORDER BY order_id limit 1000

@@ -1,0 +1,14 @@
+with subq1 as (SELECT DISTINCT(order_id)
+               FROM   courier_actions
+               WHERE  action = 'deliver_order'
+                  and date_part('month', time) = 9)
+SELECT name,
+       times_purchased
+FROM   products
+    LEFT JOIN (SELECT unnest(product_ids) as product_id,
+                      count(distinct(order_id)) as times_purchased
+               FROM   orders
+               WHERE  order_id in (SELECT *
+                                   FROM   subq1)
+               GROUP BY product_id) as t using(product_id)
+ORDER BY times_purchased desc limit 10

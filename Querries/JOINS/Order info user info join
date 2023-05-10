@@ -1,0 +1,2 @@
+SELECT count(distinct user_id) as users_count
+FROM   user_actions as t1 join users as t2 using(user_id)
