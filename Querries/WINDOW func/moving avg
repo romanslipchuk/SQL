@@ -1,0 +1,15 @@
+with subq as (SELECT DISTINCT(order_id)
+              FROM   user_actions
+              WHERE  action = 'cancel_order')
+SELECT date,
+       orders_count,
+       lag(round(moving_avg, 2)) OVER() as moving_avg
+FROM   (SELECT date,
+               orders_count,
+               avg(orders_count) OVER(ORDER BY date rows between 2 preceding and current row) moving_avg
+        FROM   (SELECT creation_time :: date as date,
+                       count(distinct(order_id)) orders_count
+                FROM   orders
+                WHERE  order_id not in (SELECT *
+                                        FROM   subq)
+                GROUP BY date) t1)t2

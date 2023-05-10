@@ -1,0 +1,20 @@
+with subq as (SELECT order_id
+              FROM   user_actions
+              WHERE  action = 'cancel_order')
+SELECT user_id,
+       round(avg(extract(epoch
+FROM   time_diff)) / 3600) hours_between_orders
+FROM   (SELECT user_id,
+               order_id,
+               time,
+               row_number() OVER(PARTITION BY user_id
+                                 ORDER BY time) order_number,
+               lag(time) OVER(PARTITION BY user_id
+                              ORDER BY time) time_lag,
+               time - lag(time) OVER(PARTITION BY user_id
+                                     ORDER BY time) time_diff
+        FROM   user_actions
+        WHERE  order_id not in (SELECT *
+                                FROM   subq)) t1
+WHERE  order_number != 1
+GROUP BY user_id limit 1000

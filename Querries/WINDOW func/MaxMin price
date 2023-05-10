@@ -1,0 +1,12 @@
+with subq as (SELECT DISTINCT(order_id)
+              FROM   user_actions
+              WHERE  action = 'cancel_order')
+SELECT date,
+       orders_count,
+       sum(orders_count) OVER(ORDER BY date) orders_cum_count
+FROM   (SELECT creation_time :: date as date,
+               count(distinct(order_id)) orders_count
+        FROM   orders
+        WHERE  order_id not in (SELECT *
+                                FROM   subq)
+        GROUP BY date) t1
