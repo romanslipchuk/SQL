@@ -1,3 +1,0 @@
-SELECT count(distinct courier_id) as couriers_count
-FROM   couriers
-WHERE  sex = 'female'

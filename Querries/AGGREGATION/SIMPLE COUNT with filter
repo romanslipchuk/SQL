@@ -1,0 +1,4 @@
+SELECT min(time) first_delivery,
+       max(time) last_delivery
+FROM   courier_actions
+WHERE  action = 'deliver_order'
