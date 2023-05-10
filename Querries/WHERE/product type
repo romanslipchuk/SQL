@@ -1,0 +1,6 @@
+SELECT product_id,
+       name
+FROM   products
+WHERE  length(name) = 5
+    or split_part(lower(name), ' ', 1) = 'чай'
+ORDER BY 1
