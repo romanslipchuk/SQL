@@ -1,0 +1,11 @@
+with subq as (SELECT count(distinct(order_id)) as orders_count
+              FROM   user_actions
+              GROUP BY user_id)
+SELECT user_id,
+       count(distinct(order_id)) as orders_count,
+       round((SELECT avg(orders_count)
+       FROM   subq), 2) as orders_avg, round(count(distinct(order_id)) - (SELECT avg(orders_count)
+                                                                   FROM   subq), 2) as orders_diff
+FROM   user_actions
+GROUP BY user_id
+ORDER BY user_id limit 1000

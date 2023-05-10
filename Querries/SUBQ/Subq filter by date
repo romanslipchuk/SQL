@@ -1,0 +1,10 @@
+with subq as (SELECT avg(price)
+              FROM   products)
+SELECT product_id,
+       name,
+       price,
+       case when price >= (SELECT *
+                    FROM   subq) + 50 then price*0.85 when price <= (SELECT *
+                                                 FROM   subq) - 50 then price*0.9 else price end new_price
+FROM   products
+ORDER BY price desc, product_id

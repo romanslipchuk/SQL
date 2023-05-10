@@ -1,0 +1,14 @@
+with subq as (SELECT courier_id,
+                     count(distinct(order_id))
+              FROM   courier_actions
+              WHERE  action = 'deliver_order'
+                 and date_part('month', time) = 9
+                 and date_part('year', time) = 2022
+              GROUP BY courier_id having count(distinct(order_id)) >= 30)
+SELECT courier_id,
+       birth_date,
+       sex
+FROM   couriers
+WHERE  courier_id in (SELECT courier_id
+                      FROM   subq)
+ORDER BY courier_id

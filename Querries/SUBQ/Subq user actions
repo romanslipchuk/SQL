@@ -1,0 +1,5 @@
+with subq as (SELECT count(distinct order_id) avg_per_user
+              FROM   user_actions
+              GROUP BY user_id)
+SELECT round(avg(avg_per_user), 2) as orders_avg
+FROM   subq
