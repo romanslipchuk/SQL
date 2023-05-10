@@ -1,0 +1,8 @@
+SELECT courier_id,
+       count(action) as delivered_orders
+FROM   courier_actions
+WHERE  date_part('year', time) = 2022
+   and date_part('month', time) = 8
+   and action = 'deliver_order'
+GROUP BY courier_id
+ORDER BY delivered_orders desc limit 3

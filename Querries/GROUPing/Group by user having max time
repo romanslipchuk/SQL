@@ -1,0 +1,6 @@
+SELECT user_id,
+       round(count(distinct(order_id)) filter(WHERE action = 'cancel_order') :: decimal / count(distinct(order_id)),
+             2) as cancel_rate
+FROM   user_actions
+GROUP BY user_id
+ORDER BY user_id
